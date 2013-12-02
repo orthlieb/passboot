@@ -1,0 +1,16 @@
+mixin jumbotron(headerText)
+	.container
+		.jumbotron
+			img(src="/ico/PassBoot.png").left
+			h1 #{headerText}
+			p(id="tagline") Welcome to the Bootstrap, Jade, Express, Passport mash up!
+	script.
+		$(document).ready(function () {
+			var taglineText = [ "Bootstrap", "Jade", "Express", "Node", "Passport" ];
+
+			var interval = setInterval(function () {
+				console.log("Tick: " + taglineText);
+				taglineText.unshift(taglineText.pop());
+				$("#tagline").text("Welcome to the " + taglineText.join(", ") + " mashup!");
+			}, 5000);
+		});

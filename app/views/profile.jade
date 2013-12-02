@@ -1,0 +1,112 @@
+doctype 5
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		meta(name='description', content='')
+		meta(name='author', content='')
+		link(rel='shortcut icon', href='/ico/favicon.png')
+		title Profile
+		
+		// Bootstrap core CSS
+		link(href='/bootstrap/css/bootstrap.css', rel='stylesheet')
+		
+		// Custom styles for this template
+		link(href='/css/profile.css', rel='stylesheet')
+
+		script(src="/jquery/jquery.js")
+		script(src="/jquery/jquery.validate.js")
+		script(src="/bootstrap/js/bootstrap.min.js")
+
+	body
+	include navbar
+	include jumbotron
+	+jumbotron(user.displayName + "'s Profile")
+	.container
+		.row
+			.col-xs-12
+				h2.text-center Your Profile
+				.account-wall
+					.form-section
+						include flashboard
+					form.form-section(id="profile-form", action='/profile', method='post')
+						.form-group
+							label(for="id").control-label Username:
+							input.form-control(id='id', name='id', placeholder='Username', type='text', value='#{user.id}', readonly).input-lg
+						.form-group
+							label(for="email").control-label Email:
+							input.form-control(id='email', name='email', placeholder='Your Email', type='email', value='#{user.email}', autofocus='autofocus').input-lg
+						.row
+							.form-group.col-xs-12.col-sm-4
+								label(for="givenName").control-label First Name:
+								input.form-control(id='givenName', name='givenName', placeholder='First Name', type='text', value='#{user.givenName}').input-lg
+							.form-group.col-xs-12.col-sm-4
+								label(for="familyName").control-label Last Name:
+								input.form-control(id='familyName', name='familyName', placeholder='Last Name', type='text', value='#{user.familyName}').input-lg
+							.form-group.col-xs12.col-sm-4
+								label(for="displayName").control-label Display Name:
+								input.form-control(id="displayName", name="displayName", placeholder="Display Name", type='text', value='#{user.displayName}').input-lg
+						.row
+							.form-group.col-xs-12.col-sm-4
+								label(for="password").control-label Password:
+								input.form-control(id='password', name='password', placeholder='Password', type='password').input-lg
+							.form-group.col-xs-12.col-sm-4
+								label(for="newpassword").control-label New Password:
+								input.form-control(id='newpassword', name='newpassword', placeholder='Password', type='password').input-lg
+							.form-group.col-xs-12.col-sm-4
+								label(for="confirm").control-label Confirm Password:
+								input.form-control(id='confirm', name='confirm', placeholder='Confirm Password', type='password').input-lg
+						hr
+						.row						
+							.form-group.col-xs-12.col-sm-6
+								button.btn.btn-block.btn-primary(type='submit').btn-lg
+									| Save
+							.form-group.col-xs-12.col-sm-6
+								a.btn.btn-block.btn-default(type='button', href="/").btn-lg
+									| Cancel
+										
+	//
+	// ================================================== 
+	// Placed at the end of the document so the pages load faster 
+	script.
+		$(document).ready(function () {
+			$("#profile-form").validate({
+					rules: {
+						password: {
+							minlength: 8
+						},
+						newpassword: {
+							minlength: 8
+						},
+						confirm: {
+							minlength: 8,
+							equalTo: "#newpassword"
+						},
+						email: {
+							email: true,
+						}
+					},
+					messages: {
+							email: {
+								email: "Enter a valid email address",
+							},
+							password: {
+								minlength: jQuery.format("Enter at least {0} characters")
+							},
+							newpassword: {
+								minlength: jQuery.format("Enter at least {0} characters")
+							},
+							confirm: {
+								minlength: jQuery.format("Enter at least {0} characters"),
+								equalTo: "Enter the same password as above"
+							},
+						},						
+					highlight: function (element) {
+						$(element).closest(".form-group").removeClass("has-success").addClass("has-error");
+						$(element).next().removeClass("hide");
+					},
+					unhighlight: function (element) {
+						$(element).closest(".form-group").removeClass("has-error").addClass("has-success");
+					}
+			});
+		});	

@@ -1,0 +1,20 @@
+nav.navbar.navbar-default.navbar-fixed-top.navbar-inverse(role="navigation")
+	.navbar-header
+		button.navbar-toggle(type="button", class="navbar-toggle", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+			span.sr-only Toggle navigation
+			span.icon-bar
+			span.icon-bar
+			span.icon-bar
+		a.navbar-brand(href="#") Passboot  
+	ul.nav.navbar-nav.navbar-right
+		li.dropdown
+			if (user && user.displayName)
+				a.dropdown-toggle(href='#', data-toggle='dropdown') Logged in as #{user.displayName}
+					b.caret
+				ul.dropdown-menu
+					li
+						a(href="/profile") Edit Profile
+					li
+						a(href="/logout") Logout
+			else
+				a(href="/login") Sign in

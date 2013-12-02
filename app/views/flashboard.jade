@@ -1,0 +1,10 @@
+//- alert-danger (red), alert-warning (yellow), alert-success (green), alert-info (blue)
+//- flash: { info: [ "Info 1", "Info 2", ... ], error: [ "Error 1", "Error 2" ], ... }
+if (flash)
+	- console.log(flash);
+	each msgArray, key in flash
+		- var classes = [ "alert", "alert-" + key, "alert-dismissable" ];
+		div(class=classes)
+			button.close(type="button", data-dismiss="alert", aria-hidden="true") &times
+			each msg in msgArray
+				p #{msg}			

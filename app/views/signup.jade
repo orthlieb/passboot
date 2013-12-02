@@ -1,0 +1,114 @@
+doctype 5
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		meta(name='description', content='')
+		meta(name='author', content='')
+		link(rel='shortcut icon', href='/ico/favicon.png')
+		title Passboot Sign Up
+		
+		// Bootstrap core CSS
+		link(href='/bootstrap/css/bootstrap.css', rel='stylesheet')
+		
+		// Custom styles for this template
+		link(href='/css/signup.css', rel='stylesheet')
+
+		script(src="/jquery/jquery.js")
+		script(src="/jquery/jquery.validate.js")
+		script(src="/bootstrap/js/bootstrap.min.js")
+	body
+		include jumbotron
+		+jumbotron("Passboot Sign Up")
+		.container
+			.row
+				.col-xs-12
+					h2.text-center Please sign up
+					.account-wall
+						.form-section
+							include flashboard
+						form.form-section(id="signup-form", action='/signup', method='post')
+							.form-group
+								label(for="id").control-label Username:
+								input.form-control(id='id', name='id', placeholder='Pick a username', type='text', autofocus='autofocus').input-lg
+							.form-group
+								label(for="email").control-label Email:
+								input.form-control(id='email', name='email', placeholder='Your Email', type='email').input-lg
+							.row
+								.form-group.col-xs-12.col-sm-6
+									label(for="givenName").control-label First Name:
+									input.form-control(id='givenName', name='givenName', placeholder='First Name', type='text').input-lg
+								.form-group.col-xs-12.col-sm-6
+									label(for="familyName").control-label Last Name:
+									input.form-control(id='familyName', name='familyName', placeholder='Last Name', type='text').input-lg
+							.row
+								.form-group.col-xs-12.col-sm-6
+									label(for="password").control-label Password:
+									input.form-control(id='password', name='password', placeholder='Password', type='password').input-lg
+								.form-group.col-xs-12.col-sm-6
+									label(for="confirm").control-label Confirm Password:
+									input.form-control(id='confirm', name='confirm', placeholder='Confirm Password', type='password').input-lg
+							br
+							button.btn.btn-lg.btn-primary.btn-block(type='submit').input-lg
+								| Sign up	
+		//
+		// ================================================== 
+		// Placed at the end of the document so the pages load faster 
+
+		script.
+			$(document).ready(function () {
+			
+				$("#signup-form").validate({
+						rules: {
+							firstname: {
+								required: true
+							},
+							lastname: {
+								required: true
+							},
+							password: {
+								required: true,
+								minlength: 8
+							},
+							confirm: {
+								required: true,
+								minlength: 8,
+								equalTo: "#password"
+							},
+							email: {
+								required: true,
+								email: true,
+							},
+							id: {
+								required: true,
+								remote: "api/user/valid"
+							}
+						},
+						messages: {
+								email: {
+									required: "Enter a valid email address",
+									email: "Enter a valid email address"
+								},
+								id: {
+									required: "Please choose a unique username",
+									remote: jQuery.format("This username is already in use or not available")
+								},
+								password: {
+									required: "Provide a password",
+									minlength: jQuery.format("Enter at least {0} characters")
+								},
+								confirm: {
+									required: "Repeat your password",
+									minlength: jQuery.format("Enter at least {0} characters"),
+									equalTo: "Enter the same password as above"
+								},
+							},						
+						highlight: function (element) {
+							$(element).closest(".form-group").removeClass("has-success").addClass("has-error");
+							$(element).next().removeClass("hide");
+						},
+						unhighlight: function (element) {
+							$(element).closest(".form-group").removeClass("has-error").addClass("has-success");
+						}
+				});
+			});	
