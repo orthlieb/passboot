@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var crypto = require('crypto');
+var hash = require('../util/hash');
 
 
 var TokenSchema = new mongoose.Schema({
@@ -28,14 +28,11 @@ TokenSchema.statics.save = function (uid, done) {
 	var Token = this;
 	var d = new Date();
 	
-	crypto.randomBytes(128, function(err, tokid) {
-      if (err) return done(err, tokid);
-		tokid = tokid.toString('base64');
-		Token.create({ id: tokid, uid: uid }, function (err, token) {
-			if (err) return done(err, token);
-			return done(null, token);
-		}); 
-	});
+	tokid = hash.createSalt();
+	Token.create({ id: tokid, uid: uid }, function (err, token) {
+		if (err) return done(err, token);
+		return done(null, token);
+	}); 
 };
 
 var Token = mongoose.model("Token", TokenSchema);

@@ -68,7 +68,7 @@ module.exports = function (app, passport) {
 	app.post("/login",
 		passport.authenticate("local", { 
 			failureRedirect: '/login',
-			failureFlash: { type: 'error', message: 'Invalid user name or password' }
+			failureFlash: { type: 'error', message: 'Invalid user name or password?' }
 		}),
 		function (req, res, next) {
 			// We've been authenticated by local, now issue a
@@ -92,14 +92,10 @@ module.exports = function (app, passport) {
 	});
 	
 	// === BOOTSTRAP SAMPLES
-    app.get("/", function(req, res) { 
-		if (req.isAuthenticated()) {
-			res.render("index", { user : req.user }); 
-		} else {
-			res.render("index", { user : null });
-		}
+    app.get("/", Auth.isAuthenticated, function(req, res) { 
+		res.render("index", { user : req.user }); 
 	});
-    app.get('/template/:selectedTemplate', function (req, res) {
+    app.get('/template/:selectedTemplate', Auth.isAuthenticated, function (req, res) {
         res.render('bootstrap3-templates/' + req.params.selectedTemplate, {
             'pathToAssets': '/bootstrap-3.0.0',
             'pathToSelectedTemplateWithinBootstrap' : '/bootstrap-3.0.0/examples/' + req.params.selectedTemplate

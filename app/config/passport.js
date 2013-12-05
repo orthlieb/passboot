@@ -13,33 +13,6 @@ var mongoose = require('mongoose'),
 
 module.exports = function (passport, config) {
 
-    // Find or Create User
-    var findOrCreate = function(provider, id, data, done, profile) {
-		User.find().where('provider').equals(provider).where('id').equals(id).exec(
-			function (err, user) {
-				if (err) 
-					done(err);
-				else {
-					if (user && _.isArray(user))
-						user = user[0];
-					console.log('*************** Find or Create User');
-					console.log('User: ' + JSON.stringify(user));
-					console.log('Provider: ' + provider);
-					console.log('ID: ' + id);
-					console.log('Data: ' + JSON.stringify(data));
-					console.log('Profile: ' + JSON.stringify(profile));
-					if (!user || user.length == 0) {
-						user = _.extend(new User(), data);
-						user.provider = provider;
-						user.id = id;
-						user.save();
-					 }
-					 done(null, user);
-				}
-			}
-		);
-	}
-    
     passport.serializeUser(function(user, done) {
     	if (_.isArray(user)) 
     		user = user[0];
@@ -123,17 +96,19 @@ module.exports = function (passport, config) {
 			//       'updated_time':'2013-10-15T22:14:24+0000'
 			//    }
 			// }        	
-			var user = {
+			var data = {
+				provider:		profile.provider,
+				id:				profile.provider + ':' + profile.id, 
 				familyName: 	profile.name.familyName,
 				givenName:		profile.name.givenName,
 				displayName:	profile.displayName,
 				email:			profile.emails[0].value,
-				id:				profile.username,
 //				photo:			
 				json:			JSON.stringify(profile._json),
 				gender:			profile.gender,
         	};
-            findOrCreate('facebook', profile.id, user, done, profile);
+        	      	
+        	User.socialLogin(data, done);
         }
     ));
     
@@ -155,17 +130,18 @@ module.exports = function (passport, config) {
 			//       'givenName':'Carl'
 			//    }
 			// }			
-			var user = {
+			var data = {
+				provider:		'google',
+				id:				'google:' + profile.emails[0].value, 
 				familyName: 	profile.name.familyName,
 				givenName: 		profile.name.givenName,
 				displayName: 	profile.displayName,
 				email: 			profile.emails[0].value,
-				id:		profile.emails[0].value	,
 //				photo:			
 				json:			JSON.stringify(profile),
 //				gender:
 			};
-			findOrCreate('google', id, user, done, profile);	
+			User.socialLogin(data, done);	
 		}
 	));
 	
@@ -198,17 +174,18 @@ module.exports = function (passport, config) {
 			//       ...
 			//    }
 			// }    
-			var user = {
+			var data = {
+				provider:		profile.provider,
+				id:				profile.provider + ':' + profile.id, 
 //				familyName: 
 //				givenName: 
-				displayName: profile.displayName,
+				displayName: 	profile.displayName,
 //				email: 
-				id: profile.username,
-				photo: profile.photos[0].value,
-				json: JSON.stringify(profile._json),
+				photo: 			profile.photos[0].value,
+				json: 			JSON.stringify(profile._json),
 //				gender:				
 			};    
-            findOrCreate('twitter', profile.id, user, done, profile);
+            User.socialLogin(data, done);
         }
     ));	
     
@@ -233,17 +210,19 @@ module.exports = function (passport, config) {
 			// 	'id':'112xdbcpHt',
 			// 	'lastName':'Orthlieb'
 			// }
-			var user = {
-  				familyName: profile.name.familyName,
-  				givenName: profile.name.givenName,
-				displayName: profile.displayName,
+			var data = {
+				provider:		profile.provider,
+				id:				profile.provider + ':' + profile.id, 
+  				familyName: 	profile.name.familyName,
+  				givenName: 		profile.name.givenName,
+				displayName: 	profile.displayName,
 //				email: 
 //				id: profile.username,
 //				photo: profile.photos[0].value,
 				json: JSON.stringify(profile._json),
 //				gender:				
 			};
-			findOrCreate('linkedin', profile.id, user, done, profile);
+			User.socialLogin(data, done);
 		}
 	));
 }

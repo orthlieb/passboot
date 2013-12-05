@@ -4,6 +4,10 @@ body {
 	background-color: #ddd;
 }
 
+hr {
+	margin: 0 0 20px 0
+}
+
 .navbar {
 	background-color: #3d2a5a
 }
