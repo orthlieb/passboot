@@ -13,7 +13,10 @@ nav.navbar.navbar-default.navbar-fixed-top.navbar-inverse(role="navigation")
 					b.caret
 				ul.dropdown-menu
 					li
-						a(href="/profile") Edit Profile
+						if (!user.provider)
+							a(href="/profile") Edit Profile
+						if (user.provider
+							a(href="#") Provider: #{user.provider}
 					li
 						a(href="/logout") Logout
 			else

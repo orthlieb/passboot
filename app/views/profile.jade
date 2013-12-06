@@ -29,41 +29,45 @@ html(lang='en')
 				.account-wall
 					.form-section
 						include flashboard
-					form.form-section(id="profile-form", action='/profile', method='post')
-						.form-group
-							label(for="id").control-label Username:
-							input.form-control(id='id', name='id', placeholder='Username', type='text', value='#{user.id}', readonly).input-lg
-						.form-group
-							label(for="email").control-label Email:
-							input.form-control(id='email', name='email', placeholder='Your Email', type='email', value='#{user.email}', autofocus='autofocus').input-lg
-						.row
-							.form-group.col-xs-12.col-sm-4
-								label(for="givenName").control-label First Name:
-								input.form-control(id='givenName', name='givenName', placeholder='First Name', type='text', value='#{user.givenName}').input-lg
-							.form-group.col-xs-12.col-sm-4
-								label(for="familyName").control-label Last Name:
-								input.form-control(id='familyName', name='familyName', placeholder='Last Name', type='text', value='#{user.familyName}').input-lg
-							.form-group.col-xs12.col-sm-4
-								label(for="displayName").control-label Display Name:
-								input.form-control(id="displayName", name="displayName", placeholder="Display Name", type='text', value='#{user.displayName}').input-lg
-						.row
-							.form-group.col-xs-12.col-sm-4
-								label(for="password").control-label Password:
-								input.form-control(id='password', name='password', placeholder='Password', type='password').input-lg
-							.form-group.col-xs-12.col-sm-4
-								label(for="newpassword").control-label New Password:
-								input.form-control(id='newpassword', name='newpassword', placeholder='Password', type='password').input-lg
-							.form-group.col-xs-12.col-sm-4
-								label(for="confirm").control-label Confirm Password:
-								input.form-control(id='confirm', name='confirm', placeholder='Confirm Password', type='password').input-lg
-						hr
-						.row						
-							.form-group.col-xs-12.col-sm-6
-								button.btn.btn-block.btn-primary(type='submit').btn-lg
-									| Save
-							.form-group.col-xs-12.col-sm-6
-								a.btn.btn-block.btn-default(type='button', href="/").btn-lg
-									| Cancel
+					if (user.provider) 
+						.form-section.alert-info
+							h2 You are logged in via #{user.provider}, profile editing is not supported.
+					else
+						form.form-section(id="profile-form", action='/profile', method='post')
+							.form-group
+								label(for="id").control-label Username:
+								input.form-control(id='id', name='id', placeholder='Username', type='text', value='#{user.id}', readonly).input-lg
+							.form-group
+								label(for="email").control-label Email:
+								input.form-control(id='email', name='email', placeholder='Your Email', type='email', value='#{user.email}', autofocus='autofocus').input-lg
+							.row
+								.form-group.col-xs-12.col-sm-4
+									label(for="givenName").control-label First Name:
+									input.form-control(id='givenName', name='givenName', placeholder='First Name', type='text', value='#{user.givenName}').input-lg
+								.form-group.col-xs-12.col-sm-4
+									label(for="familyName").control-label Last Name:
+									input.form-control(id='familyName', name='familyName', placeholder='Last Name', type='text', value='#{user.familyName}').input-lg
+								.form-group.col-xs12.col-sm-4
+									label(for="displayName").control-label Display Name:
+									input.form-control(id="displayName", name="displayName", placeholder="Display Name", type='text', value='#{user.displayName}').input-lg
+							.row
+								.form-group.col-xs-12.col-sm-4
+									label(for="password").control-label Password:
+									input.form-control(id='password', name='password', placeholder='Password', type='password').input-lg
+								.form-group.col-xs-12.col-sm-4
+									label(for="newpassword").control-label New Password:
+									input.form-control(id='newpassword', name='newpassword', placeholder='Password', type='password').input-lg
+								.form-group.col-xs-12.col-sm-4
+									label(for="confirm").control-label Confirm Password:
+									input.form-control(id='confirm', name='confirm', placeholder='Confirm Password', type='password').input-lg
+							hr
+							.row						
+								.form-group.col-xs-12.col-sm-6
+									button.btn.btn-block.btn-primary(type='submit').btn-lg
+										| Save
+								.form-group.col-xs-12.col-sm-6
+									a.btn.btn-block.btn-default(type='button', href="/").btn-lg
+										| Cancel
 										
 	//
 	// ================================================== 

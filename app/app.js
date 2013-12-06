@@ -20,11 +20,11 @@ var app = express();
 
 app.set('env', process.env.NODE_ENV || 'development');
 var config = require('./config/appConfig.json');
-var appConfig = _.extend(config.common, config[app.get('env')]);
-// XXX app.set('config', appConfig). Does this make it available to other parts of the app?
+app.set('config', _.extend(config.common, config[app.get('env')]));
+config = app.get('config');
 
 // Connect to the database.
-mongoose.connect(appConfig.db);
+mongoose.connect(config.db);
 
 // Load all models.
 var models_dir = __dirname + '/models';
@@ -34,7 +34,7 @@ fs.readdirSync(models_dir).forEach(function (file) {
 });
 
 // Configure passport
-require('./config/passport')(passport, appConfig);
+require('./config/passport')(passport, config);
 
 // All environments
 app.set('port', process.env.PORT || PORT_LISTENER);
@@ -42,11 +42,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser({ keepExtensions: true, uploadDir: path.join(__dirname, appConfig.directories.publicDir) }));
+app.use(express.bodyParser({ keepExtensions: true, uploadDir: path.join(__dirname, config.directories.publicDir) }));
 app.use(express.methodOverride());
-app.use(express.cookieParser(appConfig.key.cookie));
+app.use(express.cookieParser(config.key.cookie));
 app.use(express.session({
-    secret: appConfig.key.session,
+    secret: config.key.session,
     maxAge: 3600000
 }));
 app.use(passport.initialize());
@@ -58,7 +58,7 @@ app.use(flash());
 require('./routes/index')(app, passport);
 
 app.use(app.router);
-app.use(express.static(path.join(__dirname, appConfig.directories.publicDir)));
+app.use(express.static(path.join(__dirname, config.directories.publicDir)));
 
 app.use(function (req, res, next) {
     console.log('req.body: ' + JSON.stringify(req.body));

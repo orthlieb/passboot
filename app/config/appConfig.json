@@ -23,6 +23,9 @@
 			"session": "mission fission division iwannasession",
 			"user": "user user whatanabuser",
 			"token": "token token freshfromHoboken"
+		},
+		"url": {
+			"home": "/"
 		}
 	},
 	"development": {

@@ -29,7 +29,8 @@ function bundleFlash(req) {
 }
 
 module.exports = function (app, passport) {
-
+	var config = app.get('config');
+	
 	// Regular routes
 	
 	// View the user's profile
@@ -57,8 +58,7 @@ module.exports = function (app, passport) {
 			// Successful user creation. Login automatically.
 			req.login(user, function(err, user) {
 				if (err) return next(err, user);
-				// Show the profile page. XXX Change later on to home page.
-				return res.redirect("/profile");
+				return res.redirect(config.url.home);
 			});
 		});
 	});
@@ -82,7 +82,7 @@ module.exports = function (app, passport) {
 			});
 		},
 		function (req, res, next) {
-			res.redirect('/profile');	// XXX Switch to home page eventually.
+			res.redirect(config.url.home);
 		}  
 	);
 
@@ -92,7 +92,7 @@ module.exports = function (app, passport) {
 	});
 	
 	// === BOOTSTRAP SAMPLES
-    app.get("/", Auth.isAuthenticated, function(req, res) { 
+    app.get('/', Auth.isAuthenticated, function(req, res) { 
 		res.render("index", { user : req.user }); 
 	});
     app.get('/template/:selectedTemplate', Auth.isAuthenticated, function (req, res) {
@@ -107,30 +107,19 @@ module.exports = function (app, passport) {
 	// Facebook, Google, Twitter, LinkedIn
 	app.get("/auth/facebook", passport.authenticate("facebook", { scope : "email"}));
 	app.get("/auth/facebook/callback", 
-		passport.authenticate("facebook", { failureRedirect: '/login' }),
-		function(req, res) {
-			res.render("profile", { user : req.user });
-		}
-	);
+		passport.authenticate("facebook", { successRedirect: config.url.home, failureRedirect: '/login' }));
 	app.get("/auth/google", passport.authenticate("google"));
 	// Google will redirect the user to this URL after authentication.  Finish
 	// the process by verifying the assertion.  If valid, the user will be
 	// logged in.  Otherwise, authentication has failed.
-	app.get("/auth/google/return", passport.authenticate('google', { successRedirect: 'profile',
+	app.get("/auth/google/return", passport.authenticate('google', { successRedirect: config.view.home,
     	failureRedirect: '/login' }));
 	app.get("/auth/twitter", passport.authenticate("twitter", { scope : "email"}));
 	app.get("/auth/twitter/callback", 
-		passport.authenticate("twitter", { failureRedirect: '/login' }),
-		function(req, res) {
-			res.render("profile", { user : req.user });
-		}
-	);
+		passport.authenticate("twitter", { successRedirect: config.url.home, failureRedirect: '/login' }));
 	app.get('/auth/linkedin', passport.authenticate('linkedin'));
-	app.get('/auth/linkedin/callback', passport.authenticate('linkedin', { failureRedirect: '/login' }),
-		function(req, res) {
-			// Successful authentication, redirect home.
-			res.render("profile", { user : req.user });
-		});
+	app.get('/auth/linkedin/callback', 
+		passport.authenticate('linkedin', { successRedirect: config.url.home, failureRedirect: '/login' }));
 	// === PASSPORT ROUTES
 	
 	// === API
