@@ -112,7 +112,7 @@ module.exports = function (app, passport) {
 	// Google will redirect the user to this URL after authentication.  Finish
 	// the process by verifying the assertion.  If valid, the user will be
 	// logged in.  Otherwise, authentication has failed.
-	app.get("/auth/google/return", passport.authenticate('google', { successRedirect: config.view.home,
+	app.get("/auth/google/return", passport.authenticate('google', { successRedirect: config.url.home,
     	failureRedirect: '/login' }));
 	app.get("/auth/twitter", passport.authenticate("twitter", { scope : "email"}));
 	app.get("/auth/twitter/callback", 

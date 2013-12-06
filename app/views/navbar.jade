@@ -15,7 +15,7 @@ nav.navbar.navbar-default.navbar-fixed-top.navbar-inverse(role="navigation")
 					li
 						if (!user.provider)
 							a(href="/profile") Edit Profile
-						if (user.provider
+						if (user.provider)
 							a(href="#") Provider: #{user.provider}
 					li
 						a(href="/logout") Logout
