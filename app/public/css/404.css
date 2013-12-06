@@ -1,0 +1,64 @@
+body {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	background-color: #ddd;
+}
+
+hr {
+	margin: 0 0 20px 0
+}
+
+.navbar {
+	background-color: #3d2a5a
+}
+
+.jumbotron {
+	margin: 0;
+}
+
+.jumbotron img {
+	float: left;
+	margin: 0 20px 20px 0; 
+}
+
+.account-wall
+{
+    margin-top: 20px;
+    padding: 20px 0 20px 0;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.form-section {
+/* 	background-color: red; */
+    width: 90%;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.form-control { 
+	margin-bottom: 10px; 
+}
+
+.error {
+    color: #b94a48;
+    font-weight: normal;
+}
+
+.hide {
+	display: none;
+}
+
+.error-template {
+	padding: 40px 15px;
+	text-align: center;
+}
+.error-actions {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.error-actions .btn { 
+	margin-right: 10px; 
+}
