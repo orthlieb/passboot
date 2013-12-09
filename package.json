@@ -1,12 +1,12 @@
 {
     "name": "passboot",
     "description": "Integration of Bootstrap and Passport",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "homepage": "http://",
     "author": {
         "name": "Carl Orthlieb",
         "email": "carl@orthlieb.com",
-        "url": "http://"
+        "url": "https://github.com/orthlieb/passboot"
     },
     "license": {
         "type": "MIT",
@@ -17,24 +17,27 @@
         "start": "grunt"
     },
     "dependencies": {
-        "express": "~3.2.6",
-        "grunt": "~0.4.1",
-        "jade": "~0.34.1",
-        "googleapis": "~0.4.3",
-        "matchdep": "~0.1.2"
-    },
-    "_commentdependencies": {
-        "jade": "~0.34.1",
-        "mongoose": "~3.6.16",
-        "request": "~2.26.0",
-        "async": "~0.2.9"
+        "express": "*",
+        "connect-flash": "*",
+        "grunt": "*",
+        "jade": "*",
+        "mongoose": "*",
+        "passport": "*",
+        "passport-facebook": "*",
+        "passport-google": "*",
+        "passport-linkedin": "*",
+        "passport-local": "*",
+        "passport-remember-me": "*",
+        "passport-twitter": "*",
+        "underscore": "*"        
     },
     "keywords": [
         "nodejs",
         "Express",
         "Jade",
         "Bootstrap 3",
-        "passport"
+        "passport",
+        "MongoDB"
     ],
     "devDependencies": {
         "grunt-contrib-clean": "~0.5.0",
