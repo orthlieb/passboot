@@ -48,6 +48,13 @@ html(lang='en')
 								.form-group.col-xs-12.col-sm-6
 									label(for="confirm").control-label Confirm Password:
 									input.form-control(id='confirm', name='confirm', placeholder='Confirm Password', type='password').input-lg
+							if (captcha)
+								.row
+									.col-xs-12.col-sm-12
+										checkbox.hide(id="hp", name="hp")
+										input.hide(id="token", name='token', value="#{token}")
+										#notspamdiv
+										
 							hr
 							button.btn.btn-lg.btn-primary.btn-block(type='submit')
 								| Sign up
@@ -56,16 +63,14 @@ html(lang='en')
 		// Placed at the end of the document so the pages load faster 
 
 		script.
-			$(document).ready(function () {
+			$(document).ready(function () {			
+				// Add a 'checkbox' captcha to prevent spammers. Value is a one-time token.		
+				var token = $('#token').val();		
+				console.log(token);
+				$('#notspamdiv').append('<input type="checkbox" id="notspambot" name="notspambot" value="' + token + '"/> I am not a spambot</input>');
 			
 				$("#signup-form").validate({
 						rules: {
-							firstname: {
-								required: true
-							},
-							lastname: {
-								required: true
-							},
 							password: {
 								required: true,
 								minlength: 8
@@ -93,6 +98,12 @@ html(lang='en')
 									required: "Please choose a unique username",
 									remote: jQuery.format("This username is already in use or not available")
 								},
+								givenName: {
+									required: "Please enter your first name"
+								},
+								familyName: {
+									required: "Please enter your last name"
+								},
 								password: {
 									required: "Provide a password",
 									minlength: jQuery.format("Enter at least {0} characters")
@@ -102,6 +113,10 @@ html(lang='en')
 									minlength: jQuery.format("Enter at least {0} characters"),
 									equalTo: "Enter the same password as above"
 								},
+								notspam: {
+									required: "Please check this box to prove that you are human",
+									range: "Please check this box to prove that you are human"
+								}
 							},						
 						highlight: function (element) {
 							$(element).closest(".form-group").removeClass("has-success").addClass("has-error");

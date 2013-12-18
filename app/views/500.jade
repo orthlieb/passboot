@@ -19,16 +19,15 @@ html(lang="en")
 		script(src="/bootstrap/js/bootstrap.min.js")
 	body
 		include jumbotron
-		+jumbotron("Passboot Error")
+		+jumbotron("Bushwhacked by El Bandito!", "/img/Bandito.png")
 		.container
 			.row
 				.col-md-12
 					.error-template
-						h1 Oops!
-						h2 500 Not Found
 						.account-wall
-							.error-details
-								| So sorry. An internal error has occurred (#{error}).
+							h2 Server Error: #{error.code}											
+							.form-section
+								| #{error.message}
 							.error-actions
 								a(href="/").btn.btn-primary.btn-lg
 									span.glyphicon.glyphicon-home

@@ -32,43 +32,86 @@ module.exports = function (app, passport) {
 	var config = app.get('config');
 	
 	// Regular routes
-	
+	app.get("/", Auth.isAuthenticated, function (req, res) { 
+		res.render("index", { user : req.user }); 
+	});
+
 	// View the user's profile
 	app.get("/profile", Auth.isAuthenticated, function (req, res) { 
 		res.render("profile", { user : req.user }); 
 	});
 	app.post("/profile", Auth.isAuthenticated, function (req, res, next) {
-		User.saveProfile(req.body, function (err, user, message) {
-			if (err) return next(err, user, message);
-			
-			req.flash('info', "Profile successfully updated.");
+		User.saveProfile(req.body, function (err, user) {
+			if (err) { 
+				req.flash(err.type, err.message);
+			} else {
+				req.flash('info', "Profile successfully updated.");
+			}
 			res.render('profile', { user: user, flash: bundleFlash(req) });
 		});
 	});
 
 	// Local username/password signup and login.
-	app.get("/signup", function (req, res) {
-		res.render("signup");
-	});
-	app.post("/signup", function (req, res, next) {		
+	
+	function RenderSignup(req, res, next) {
+		// Generate a one time token for the value of the checkbox, prevents replays.
+		Token.save("captcha", function (err, token) {
+			if (err) { return next ? next(err, token) : null; }
+			
+			res.render("signup", { user: req.body, captcha: config.features.checkbox_captcha, token: token.id, flash: bundleFlash(req) });
+		});
+	}
+	
+	function SignupAndLogin(req, res, next) {
 		User.signup(req.body, function (err, user) {
 			// If there is an error while signing up, display the error.
-			if (err) next(err, user);
-			
+			if (err) { 
+				req.flash(err.type, err.message);
+				RenderSignup(req, res, next);
+				return;
+			}
+
 			// Successful user creation. Login automatically.
 			req.login(user, function(err, user) {
 				if (err) return next(err, user);
 				return res.redirect(config.url.home);
 			});
 		});
+	}
+	
+	app.get("/signup", function (req, res) {
+		RenderSignup(req, res);
 	});
+	
+	app.post("/signup", function (req, res, next) {	
+		if (config.features.checkbox_captcha) {
+			if (req.hp) {
+				// Hidden checkbox that should never be checked. Honeypot field for spambots. Issue a generic message.
+				req.flash("error", "Invalid signup.");
+				RenderSignup(req, res, next);
+			}	
+			Token.consume(req.body.notspambot, function (err, token) {
+				// Must have no error and found the correct token
+				if (!err && token && token == "captcha") {
+					return SignupAndLogin(req, res, next);
+				} else {
+					// Bad captcha
+					req.flash("error", "Please check the box to prove you're not a spambot.");
+					RenderSignup(req, res, next);
+				}
+			});
+		} else {	// No checkbox captcha
+			return SignupAndLogin(req, res, next);
+		}
+	});
+	
 	app.get("/login", function (req, res) { 
-		res.render("login", { flash: bundleFlash(req) });
+		res.render("login", { rm: config.features.remember_me, flash: bundleFlash(req) });
 	});
 	app.post("/login",
 		passport.authenticate("local", { 
 			failureRedirect: '/login',
-			failureFlash: { type: 'error', message: 'Invalid user name or password?' }
+			failureFlash: { type: 'error', message: 'Invalid user name or password.' }
 		}),
 		function (req, res, next) {
 			// We've been authenticated by local, now issue a
@@ -76,7 +119,7 @@ module.exports = function (app, passport) {
 			if (!req.body.rememberme) { return next(); }
 
 			Token.save(req.user.id, function (err, token) {
-				if (err) { return done(err, token); }
+				if (err) { return next(err); }
 				res.cookie('remember_me', token.id, { path: '/', httpOnly: true, maxAge: 604800000 }); // 7 days XXX Switch to config flag
 				return next();
 			});
@@ -91,18 +134,6 @@ module.exports = function (app, passport) {
 		res.redirect('/login');
 	});
 	
-	// === BOOTSTRAP SAMPLES
-    app.get('/', Auth.isAuthenticated, function(req, res) { 
-		res.render("index", { user : req.user }); 
-	});
-    app.get('/template/:selectedTemplate', Auth.isAuthenticated, function (req, res) {
-        res.render('bootstrap3-templates/' + req.params.selectedTemplate, {
-            'pathToAssets': '/bootstrap-3.0.0',
-            'pathToSelectedTemplateWithinBootstrap' : '/bootstrap-3.0.0/examples/' + req.params.selectedTemplate
-        });
-    });
-    // === BOOTSTRAP SAMPLES
-
 	// === PASSPORT ROUTES    
 	// Facebook, Google, Twitter, LinkedIn
 	app.get("/auth/facebook", passport.authenticate("facebook", { scope : "email"}));

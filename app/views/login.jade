@@ -27,15 +27,16 @@ html(lang="en")
 					.account-wall
 						.form-section
 							include flashboard
-						img.profile-img(src='https://ssl.gstatic.com/accounts/ui/avatar_2x.png', alt='')
+						img.profile-img(src='../img/Cowboy.png', alt='')
 						form.form-section(id="login-form", action="/login", method="post")
 							input.form-control(type='text', name='id', placeholder='Username', autofocus='autofocus')
 							input.form-control(type='password', name='password', id='password', placeholder='Password')
 							button.btn.btn-lg.btn-primary.btn-block(type='submit')
 								| Sign in
-							label.checkbox.pull-left
-								input(type='checkbox', id='rememberme', name='rememberme', value='remember-me')
-								| Remember me
+							if (rm)
+								label.checkbox.pull-left
+									input(type='checkbox', id='rememberme', name='rememberme', value='remember-me')
+									| Remember me
 							a.pull-right.need-help(href='#') Need help? 
 							span.clearfix
 						a.text-center.new-account(href='/signup') Create an account 

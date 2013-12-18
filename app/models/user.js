@@ -2,42 +2,69 @@ var mongoose = require('mongoose');
 var hash = require('../util/hash');
 var _ = require('underscore');
 
-var UserSchema = new mongoose.Schema({
-	id:				String,
-	displayName:	String,
-	givenName:		String,
-	familyName:		String,
-	provider: 		String,
-	email:      	String,
+var schemaTemplate = {
+	id:				{ type: String, required: true, unique: true, lowercase: true, trim: true },
+	displayName:	{ type: String, required: true, trim: true },
+	givenName:		{ type: String, required: true, trim: true },
+	familyName:		{ type: String, required: true, trim: true },
+	provider: 		{ type: String, default: 'local' },
+	email:      	{ type: String, required: true, match: /\b[A-Z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/i, lowercase: true, trim: true },
 	salt:       	String,
 	hash:       	String,
 	photo:			String,
 	gender:			String,
 	json:			String,
-});
+	created: 		{ type: Date, default: Date.now }
+};
+
+var UserSchema = new mongoose.Schema(schemaTemplate);
+
+function UserVanillaErrorHandler(err, user, done) {
+// err: ValidationError
+// 	errors: Object
+// 		displayName: ValidatorError
+// 			message: "Validator "required" failed for path displayName with value ``"
+// 			name: "ValidatorError"
+// 			path: "displayName"
+// 			stack: undefined
+// 			type: "required"
+// 			value: ""
+// 		familyName: ValidatorError
+// 		givenName: ValidatorError
+// 	message: "Validation failed"
+//	name: "ValidationError"
+// 	stack: undefined
+	if (err) {
+		if (err.name && err.name == "ValidationError") {
+			err.message += " [" + _.keys(err.errors).join(", ") + "]";
+			return done({ code: 400, type: 'error', message: err.message, params: _.keys(err.errors)});
+		}
+		console.log("User Model Error: " + err);
+		return done({ code: 500, type: 'error', message: 'Internal error.' });
+	}
+	return done(null, user);
+}
 
 UserSchema.statics.exists = function (username, done) {
 	var User = this;
 	this.findOne({ id: username }, function (err, user) {
-		if (err) return done(err);
+		if (err) return UserVanillaErrorHandler(err, user, done);
 		if (!user) {
 			console.log("UserSchema.exists(" + username + ") false");
-			return done("notfound", { type: 'error', message: 'User does not exist.' });
+			return done({ code: 404, type: 'error', message: 'User does not exist.' });
 		}
-		console.log("UserSchema.exists(" + username + ") true");
-		console.log("User: " + JSON.stringify(user));
+
 		return done(false, user);
 	});
 }
-
-var fields = [ "provider", "id", "email", "displayName", "givenName", "familyName", "gender", "photo", "salt", "hash" ];
 
 UserSchema.statics.signup = function (data, done) {
 	var User = this;
 	
 	User.count({ id: data.id }, function (err, count) {
+		if (err) return UserVanillaErrorHandler(err, user, done);
 		if (count > 0) {
-			return done("duplicate", { type: 'error', message: "User id already exists." });
+			return done({ code: 409, type: 'error', message: "User id already exists." });
 		}
 		
 		data.displayName = data.displayName || data.givenName + " " + data.familyName;		
@@ -46,10 +73,10 @@ UserSchema.statics.signup = function (data, done) {
 		data.salt = obj.salt;
 		data.hash = obj.hash;
 		 
-		data = _.pick(data, fields);	// Limit which fields get picked up
+		data = _.pick(data, _.keys(schemaTemplate));	// Limit which fields get picked up
 		User.create(data, function (err, user) {
-			console.log('Created user (err="' + JSON.stringify(err) + '", user="' + JSON.stringify(user) + '"');
-			if (err) return done(err);
+			if (err) return UserVanillaErrorHandler(err, user, done);
+
 			return done(null, user);
 		});
 	});
@@ -57,12 +84,11 @@ UserSchema.statics.signup = function (data, done) {
 
 UserSchema.statics.socialLogin = function (data, done) {
 	User.findOne({ provider: data.provider, id: data.id }, function (err, user) {
-		if (err) return done(err);
+		if (err) return UserVanillaErrorHandler(err, user, done);
 		if (user) return done(null, user);	// Already exists.
-		data = _.pick(data, fields);		// Limit which fields get applied.
+		data = _.pick(data, _.keys(schemaTemplate));		// Limit which fields get applied.
 		User.create(data, function (err, user) {
-			console.log('Created social user (err="' + JSON.stringify(err) + '", user="' + JSON.stringify(user) + '"');
-			if (err) return done(err);
+			if (err) return UserVanillaErrorHandler(err, user, done);
 			return done(null, user);
 		});
 	});
@@ -72,14 +98,14 @@ UserSchema.statics.saveProfile = function (data, done) {
 	var User = this;
 	
 	User.findOne({ id: data.id }, function (err, user) {
-		if (err) done(err);
+		if (err) return UserVanillaErrorHandler(err, user, done);
 
-		if (!user) done(404, null, { type: 'error', message: "User does not exist." });
+		if (!user) return done({ code: 404, type: 'error', message: "User does not exist." });
 		
 		if (data.password && data.newpassword) {
-			// Make sure that the password is valid before we change to a new one.
+			// Make sure that the old password is valid before we change to a new one.
 			if (!hash.checkPassword(user.hash, user.salt, data.password)) {
-				return done(null, false, { type: 'error', message: "Incorrect password." });
+				return done({code: 401,  type: 'error', message: "Incorrect password." });
 			}
 			
 			var obj = hash.createHash(data.newpassword);
@@ -87,11 +113,11 @@ UserSchema.statics.saveProfile = function (data, done) {
 			data.hash = obj.hash;
 		}
 		
-		user = _.extend(user, _.pick(data, fields)); 	// Limit which fields get applied.
+		user = _.extend(user, _.pick(data, _.keys(schemaTemplate))); 	// Limit which fields get applied.
 
 		user.save(function(err, user) {
-			if (err) done(err);
-			done(null, user);
+			if (err) return UserVanillaErrorHandler(err, user, done);
+			return done(null, user);
 		});
 	});
 };
@@ -99,15 +125,12 @@ UserSchema.statics.saveProfile = function (data, done) {
 UserSchema.statics.isValidUserPassword = function (id, password, done) {
 	this.findOne({ id : id }, function (err, user) {
 		// if (err) throw err;
-		if (err) return done(err);
-		if (!user) {
-			return done(null, false, { type: 'error', message: 'Unknown user id or incorrect password.' });
-		}
+		if (err) return UserVanillaErrorHandler(err, user, done);
 		
-		if (hash.checkPassword(user.hash, user.salt, password))
+		if (user && hash.checkPassword(user.hash, user.salt, password))
 			return done(null, user);		// Checks out!
 		
-		return done(null, false, { type: 'error', message: 'Unknown user id or incorrect password.' });
+		return done({ code: 401, type: 'error', message: 'Unknown user id or incorrect password.' });
 	});
 };
 

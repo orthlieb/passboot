@@ -1,9 +1,12 @@
-mixin jumbotron(headerText)
+mixin jumbotron(headerText, iconFile)
 	.container
 		.jumbotron
-			img(src="/ico/PassBoot.png").left
+			if (iconFile) 
+				img(src="#{iconFile}").left
+			else
+				img(src="/img/PassBoot.png").left
 			h1 #{headerText}
-			p(id="tagline") Welcome to the Bootstrap, Jade, Express, Passport mash up!
+			p(id="tagline") Welcome, pardner, to this here Bootstrap, Jade, Express, Passport round up!
 	script.
 		$(document).ready(function () {
 			var taglineText = [ "Bootstrap", "Jade", "Express", "Node", "Passport" ];
@@ -11,6 +14,6 @@ mixin jumbotron(headerText)
 			var interval = setInterval(function () {
 				console.log("Tick: " + taglineText);
 				taglineText.unshift(taglineText.pop());
-				$("#tagline").text("Welcome to the " + taglineText.join(", ") + " mashup!");
+				$("#tagline").text("Welcome, pardner, to this here " + taglineText.join(", ") + " round up!");
 			}, 5000);
 		});

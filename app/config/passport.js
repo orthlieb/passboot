@@ -34,27 +34,32 @@ module.exports = function (passport, config) {
 		passwordField: 'password'
 	},
 	function(id, password, done) {
-		User.isValidUserPassword(id, password, done);
+		User.isValidUserPassword(id, password, function (err, user) {
+			if (err) return done(false, null);
+			return done(false, user);
+		});
 	}));
 	
 	// Remember me
-	passport.use(new RememberMeStrategy(
-		function(token, done) {
-			// Consumes the token and finds the associated user.
-			Token.consume(token, function (err, uid) {
-				if (err) { return done(err, uid); }
-				User.findOne({ id: uid }, function (err, user) {
-					if (!user) { return done('notfound', { type: 'error', message: 'Remember Me: user id not found' }); }
-					return done(null, user);
+	if (config.features.remember_me) {
+		passport.use(new RememberMeStrategy(
+			function(token, done) {
+				// Consumes the token and finds the associated user.
+				Token.consume(token, function (err, uid) {
+					if (err) { return done(err, uid); }
+					User.findOne({ id: uid }, function (err, user) {
+						if (!user) { return done('notfound', { type: 'error', message: 'Remember Me: user id not found' }); }
+						return done(null, user);
+					});
 				});
-			});
-	  	},
-		function(user, done) {
-			// Creates a new one-time token associated with this user.
-			Token.save(user.id, done);
-		}
-	));
-
+			},
+			function(user, done) {
+				// Creates a new one-time token associated with this user.
+				Token.save(user.id, done);
+			}
+		));
+	}
+	
 	// Facebook
 	passport.use(new FacebookStrategy({
 			clientID: config.auth.facebook.clientID,

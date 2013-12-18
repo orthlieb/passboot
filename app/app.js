@@ -18,6 +18,7 @@ var express = require('express'),
 
 var app = express();
 
+// Bring in common and 
 app.set('env', process.env.NODE_ENV || 'development');
 var config = require('./config/appConfig.json');
 app.set('config', _.extend(config.common, config[app.get('env')]));
@@ -51,7 +52,8 @@ app.use(express.session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(passport.authenticate('remember-me'));	// Log the user back in if already logged in.
+if (config.features.remember_me)
+	app.use(passport.authenticate('remember-me'));	// Log the user back in if already logged in.
 app.use(flash());
 
 // Routes
@@ -59,11 +61,6 @@ require('./routes/index')(app, passport);
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, config.directories.publicDir)));
-
-app.use(function (req, res, next) {
-    console.log('req.body: ' + JSON.stringify(req.body));
-    next();
-});
 
 // Since this is the last non-error-handling
 // middleware use()d, we assume 404, as nothing else
@@ -74,22 +71,23 @@ app.use(function (req, res, next) {
 // $ curl http://localhost:3000/notfound -H "Accept: text/plain"
 
 app.use(function(req, res, next){
-  res.status(404);
+	console.log('404 Error req.body: ' + JSON.stringify(req.body));
+  	res.status(404);
   
-  // respond with html page
-  if (req.accepts('html')) {
-    res.render('404', { url: req.url });
-    return;
-  }
+	// respond with html page
+	if (req.accepts('html')) {
+		res.render('404', { url: req.url });
+		return;
+	}
 
-  // respond with json
-  if (req.accepts('json')) {
-    res.send({ error: 'Not found' });
-    return;
-  }
+	// respond with json
+	if (req.accepts('json')) {
+		res.send({ error: 'Not found' });
+		return;
+	}
 
-  // default to plain-text. send()
-  res.type('txt').send('Not found');
+	// default to plain-text. send()
+	res.type('txt').send('Not found');
 });
 
 // error-handling middleware, take the same form
@@ -105,11 +103,12 @@ app.use(function(req, res, next){
 // we simply respond with an error page.
 
 app.use(function(err, req, res, next){
-  // we may use properties of the error object
-  // here and next(err) appropriately, or if
-  // we possibly recovered from the error, simply next().
-  res.status(err.status || 500);
-  res.render('500', { error: err });
+	// We may use properties of the error object
+	// here and next(err) appropriately, or if
+	// we possibly recovered from the error, simply next().
+    console.log('500 Error req.body: ' + JSON.stringify(req.body));
+	res.status(err.status || 500);
+	res.render('500', { error: err });
 });
 
 http.createServer(app).listen(app.get('port'), function () {

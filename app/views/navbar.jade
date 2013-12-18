@@ -13,9 +13,9 @@ nav.navbar.navbar-default.navbar-fixed-top.navbar-inverse(role="navigation")
 					b.caret
 				ul.dropdown-menu
 					li
-						if (!user.provider)
+						if (!user.provider || user.provider == "local")
 							a(href="/profile") Edit Profile
-						if (user.provider)
+						else
 							a(href="#") Provider: #{user.provider}
 					li
 						a(href="/logout") Logout

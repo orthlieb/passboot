@@ -21,7 +21,7 @@ html(lang='en')
 	body
 	include navbar
 	include jumbotron
-	+jumbotron("The Main Page")
+	+jumbotron("The Main Page", "/img/Index.png")
 	.container
 		.row
 			.col-xs-12
@@ -29,5 +29,5 @@ html(lang='en')
 					.form-section
 						include flashboard
 					.form-section.alert-info
-						h2 Hi #{user.displayName}!, this is the main page where amazing things happen.
+						h2 Howdy #{user.displayName}, this here's the main street of this site. Mosey along, now.
 			

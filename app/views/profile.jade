@@ -21,7 +21,7 @@ html(lang='en')
 	body
 	include navbar
 	include jumbotron
-	+jumbotron(user.displayName + "'s Profile")
+	+jumbotron(user.displayName + "'s Profile", "img/Profile.png")
 	.container
 		.row
 			.col-xs-12
@@ -29,7 +29,7 @@ html(lang='en')
 				.account-wall
 					.form-section
 						include flashboard
-					if (user.provider) 
+					if (user.provider && user.provider != "local") 
 						.form-section.alert-info
 							h2 You are logged in via #{user.provider}, profile editing is not supported.
 					else

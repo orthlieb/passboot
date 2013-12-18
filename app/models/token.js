@@ -12,9 +12,9 @@ var TokenSchema = new mongoose.Schema({
 TokenSchema.statics.consume = function (tokid, done) {
 	var Token = this;
 	Token.findOne({ id: tokid }, function (err, token) {
-		if (err) done(err, token);
+		if (err) return done(err, token);
 		if (!token) {
-			return done(null, false);
+			return done({ code: 404, type: "error", message: "Token not found." });
 		}
 
 		var uid = token.uid;
