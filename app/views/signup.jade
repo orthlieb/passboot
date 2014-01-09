@@ -61,9 +61,12 @@ html(lang='en')
 		//
 		// ================================================== 
 		// Placed at the end of the document so the pages load faster 
-
+		if (formData && formData.id)
+			= "$('#id').val('" + formData.id + "');"
+		if (formData && formData.email)
+			= "$('#email').val('" + formData.email + "');"
 		script.
-			$(document).ready(function () {			
+			$(document).ready(function () {	
 				// Add a 'checkbox' captcha to prevent spammers. Value is a one-time token.		
 				var token = $('#token').val();		
 				console.log(token);

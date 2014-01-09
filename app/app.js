@@ -1,6 +1,9 @@
 /*
  creating a Express app initializing it with the HelloWorld message
  */
+ 
+ // XXX Things to do: timeout on logged in session
+ // XXX Things to do: Recover password and username
 'use strict';
 
 var PORT_LISTENER = 3001;
@@ -30,8 +33,9 @@ mongoose.connect(config.db);
 // Load all models.
 var models_dir = __dirname + '/models';
 fs.readdirSync(models_dir).forEach(function (file) {
-  if (file[0] === '.') return; 
-  require(models_dir + '/' + file);
+	console.log('Models: loading ' + file);
+	if (file[0] === '.') return; 
+	require(models_dir + '/' + file);
 });
 
 // Configure passport
@@ -57,7 +61,7 @@ if (config.features.remember_me)
 app.use(flash());
 
 // Routes
-require('./routes/index')(app, passport);
+require('./routes')(app, passport);
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, config.directories.publicDir)));

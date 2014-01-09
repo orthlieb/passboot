@@ -2,19 +2,35 @@ var mongoose = require('mongoose');
 var hash = require('../util/hash');
 var _ = require('underscore');
 
+function UserEscapeString(val, schemaType) {
+	return _.escape(val);
+}
+
+// XXX Probably shouldn't hard code the providers.
+var USER_PROVIDERS = [ "local", "facebook", "google", "twitter", "linkedin" ];
+var USER_GENDERS = [ "male", "female" ];
+
 var schemaTemplate = {
-	id:				{ type: String, required: true, unique: true, lowercase: true, trim: true },
-	displayName:	{ type: String, required: true, trim: true },
-	givenName:		{ type: String, required: true, trim: true },
-	familyName:		{ type: String, required: true, trim: true },
-	provider: 		{ type: String, default: 'local' },
-	email:      	{ type: String, required: true, match: /\b[A-Z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/i, lowercase: true, trim: true },
-	salt:       	String,
-	hash:       	String,
-	photo:			String,
-	gender:			String,
-	json:			String,
-	created: 		{ type: Date, default: Date.now }
+	id:	{ type: String, required: true, unique: true, lowercase: true, trim: true, set: UserEscapeString },
+	displayName: { type: String, trim: true, set: UserEscapeString },
+	givenName: { type: String, trim: true, set: UserEscapeString },
+	familyName: { type: String, trim: true, set: UserEscapeString },
+	provider: { type: String, default: 'local', lowercase: true, enum: USER_PROVIDERS },
+	email: { 
+		type: String, 
+		match: [ /\b[A-Z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/i, '{PATH} is not a valid email' ],
+		lowercase: true, 
+		trim: true, 
+		set: UserEscapeString 
+	},
+	salt: String,
+	hash: String,
+	photo: { 
+		type: String, 
+		match: [ /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/, '{PATH} is not a valid URL' ]
+	},
+	gender: { type: String, lowercase: true, trim: true, enum: USER_GENDERS },
+	created: { type: Date, default: Date.now }
 };
 
 var UserSchema = new mongoose.Schema(schemaTemplate);
@@ -43,6 +59,10 @@ function UserVanillaErrorHandler(err, user, done) {
 		return done({ code: 500, type: 'error', message: 'Internal error.' });
 	}
 	return done(null, user);
+}
+
+UserSchema.statics.keys = function () {
+	return _.keys(schemaTemplate);
 }
 
 UserSchema.statics.exists = function (username, done) {
@@ -74,6 +94,7 @@ UserSchema.statics.signup = function (data, done) {
 		data.hash = obj.hash;
 		 
 		data = _.pick(data, _.keys(schemaTemplate));	// Limit which fields get picked up
+
 		User.create(data, function (err, user) {
 			if (err) return UserVanillaErrorHandler(err, user, done);
 
