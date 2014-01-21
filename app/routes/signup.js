@@ -15,7 +15,7 @@ module.exports = function (app, passport) {
     // Local username/password signup and login.    
     function RenderSignup(req, res, next) {
         // Generate a one time token for the value of the checkbox, prevents replays.
-        Token.save("captcha", function (err, token) {
+        Token.save({ type: "captcha", value: "captcha" }, function (err, token) {
             if (err) { return (next ? next(err, token) : null); }
             
             res.render("signup", { formData: req.body , captcha: config.features.checkbox_captcha, token: token.id, flash: UI.bundleFlash(req) });

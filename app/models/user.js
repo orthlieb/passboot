@@ -155,5 +155,28 @@ UserSchema.statics.isValidUserPassword = function (id, password, done) {
 	});
 };
 
+UserSchema.statics.changePassword = function (data, done) {
+	var User = this;
+	
+	User.findOne({ id: data.id }, function (err, user) {
+		if (err) return UserVanillaErrorHandler(err, user, done);
+
+		if (!user) return done({ code: 404, type: 'error', message: "User does not exist." });
+		
+		if (data.newpassword) {
+			var obj = hash.createHash(data.newpassword);
+			data.salt = obj.salt;
+			data.hash = obj.hash;
+		}
+		
+		user = _.extend(user, _.pick(data, _.keys(schemaTemplate))); 	// Limit which fields get applied.
+
+		user.save(function(err, user) {
+			if (err) return UserVanillaErrorHandler(err, user, done);
+			return done(null, user);
+		});
+	});
+}
+
 var User = mongoose.model("User", UserSchema);
 module.exports = User;

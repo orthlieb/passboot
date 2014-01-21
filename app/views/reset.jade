@@ -1,0 +1,85 @@
+doctype 5
+html(lang="en")
+	head
+		meta(charset="utf-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		meta(name="description", content="Reset password")
+		meta(name="author", content="")
+		link(rel="shortcut icon", href="/ico/favicon.png")
+		title Reset Password
+		
+		// Bootstrap core CSS
+		link(href="/bootstrap/css/bootstrap.css", rel="stylesheet")
+		
+		// Custom styles for this template
+		link(href="/css/reset.css", rel="stylesheet")
+
+		script(src="/jquery/jquery.js")
+		script(src="/jquery/jquery.validate.js")
+		script(src="/bootstrap/js/bootstrap.min.js")
+
+	body
+	include jumbotron
+	+jumbotron("Reset Password", "img/Sheriff.png")
+	.container
+		.row
+			.col-xs-12
+				.account-wall
+					.form-section
+						include flashboard
+					.form-section.form-info
+						h3 The Sheriff says you need to lock down your account again, go ahead and type in a new password.
+					form.form-section(id="reset-form", action="/reset", method="post")
+						.form-group
+							label(for="id").control-label Username:
+							input.form-control(id="id", name="id", placeholder="Username", type="text", value="#{user.id}", readonly).input-lg
+						.row
+							.form-group.col-xs-12.col-sm-6
+								label(for="password").control-label New Password:
+								input.form-control(id="newpassword", name="newpassword", placeholder="Password", type="password").input-lg
+							.form-group.col-xs-12.col-sm-6
+								label(for="confirm").control-label Confirm Password:
+								input.form-control(id="confirm", name="confirm", placeholder="Confirm Password", type="password").input-lg
+
+						input.hide(id="token", name='token', value="#{token}", readonly)
+						hr
+						.row						
+							.form-group.col-xs-12.col-sm-6
+								button.btn.btn-block.btn-primary(type="submit").btn-lg
+									| Save
+							.form-group.col-xs-12.col-sm-6
+								a.btn.btn-block.btn-default(type="button", href="/").btn-lg
+									| Cancel
+	//
+	// ================================================== 
+	// Placed at the end of the document so the pages load faster 
+	script.
+		$(document).ready(function () {
+			$("#reset-form").validate({
+				rules: {
+					password: {
+						minlength: 8
+					},
+					confirm: {
+						minlength: 8,
+						equalTo: "#newpassword"
+					}
+				},
+				messages: {
+					password: {
+						minlength: jQuery.format("Enter at least {0} characters")
+					},
+					confirm: {
+						minlength: jQuery.format("Enter at least {0} characters"),
+						equalTo: "Enter the same password as above"
+					}
+				},						
+				highlight: function (element) {
+					$(element).closest(".form-group").removeClass("has-success").addClass("has-error");
+					$(element).next().removeClass("hide");
+				},
+				unhighlight: function (element) {
+					$(element).closest(".form-group").removeClass("has-error").addClass("has-success");
+				}
+			});
+		});	

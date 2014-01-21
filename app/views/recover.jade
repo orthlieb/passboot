@@ -1,18 +1,18 @@
 doctype 5
-html(lang='en')
+html(lang="en")
 	head
-		meta(charset='utf-8')
-		meta(name='viewport', content='width=device-width, initial-scale=1.0')
-		meta(name='description', content='')
-		meta(name='author', content='')
-		link(rel='shortcut icon', href='/ico/favicon.png')
-		title The Main Page
+		meta(charset="utf-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		meta(name="description", content="")
+		meta(name="author", content="")
+		link(rel="shortcut icon", href="/ico/favicon.png")
+		title Recover
 		
 		// Bootstrap core CSS
-		link(href='/bootstrap/css/bootstrap.css', rel='stylesheet')
+		link(href="/bootstrap/css/bootstrap.css", rel="stylesheet")
 		
 		// Custom styles for this template
-		link(href='/css/profile.css', rel='stylesheet')
+		link(href="/css/recover.css", rel="stylesheet")
 
 		script(src="/jquery/jquery.js")
 		script(src="/jquery/jquery.validate.js")
@@ -27,6 +27,52 @@ html(lang='en')
 				.account-wall
 					.form-section
 						include flashboard
-					.form-section.alert-info
-						h2 Perhaps you are lost? The Sheriff can help.
-			
+					.form-section.form-info
+						h3 Having trouble signing in? The Sheriff can help.
+					form.form-section(id="recover-form", action="/recover", method="post")
+						.form-group
+							p I'm plumb out of ideas so I need to:
+							label.radio.inline
+								input(type="radio", checked="checked", id="radio1", name="recoverOption", autofocus='autofocus', value="password")
+								| Reset my password
+							label.radio.inline
+								input(type="radio", id="radio2", name="recoverOption", value="username")
+								| Find my user name
+						.form-group
+							label(for="email").control-label Enter the email address you used to sign into Passboot.
+							input.form-control.input-lg(id="email", name="email", placeholder="Email address", type="text") 
+						hr   
+						.row						
+							.form-group.col-xs-12.col-sm-6
+								button.btn.btn-block.btn-primary(type="submit").btn-lg
+									| Submit
+							.form-group.col-xs-12.col-sm-6
+								a.btn.btn-block.btn-default(type="button", href="/").btn-lg
+									| Cancel
+	//
+	// ================================================== 
+	// Placed at the end of the document so the pages load faster 
+	script.
+		$(document).ready(function () {
+			$("#recover-form").validate({
+					rules: {
+						email: {
+							email: true,
+							required: true
+						}
+					},
+					messages: {
+							email: {
+								email: "Enter a valid email address",
+								required: "Enter a valid email address"
+							},
+						},						
+					highlight: function (element) {
+						$(element).closest(".form-group").removeClass("has-success").addClass("has-error");
+						$(element).next().removeClass("hide");
+					},
+					unhighlight: function (element) {
+						$(element).closest(".form-group").removeClass("has-error").addClass("has-success");
+					}
+			});
+		});	

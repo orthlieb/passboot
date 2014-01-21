@@ -28,6 +28,8 @@ Passboot
 # Documentation
 ---
 ## Configuration
+In order to install, you will need to take appConfigTemplate.json and copy it to appConfig.json and populate it with your private and confidential data, like API keys.
+
 There are number of useful configuration parameters that can be found in appConfig.json. These include keys for authentication of APIs like Facebook, Google, Twitter, and LinkedIn as well as feature flags to turn on and off features. The use of these configurations will be documented in the sample file included here.
 
 You *should not* check this file into your sourcecode repository if your code is open source or otherwise available to the public as this will expose your API keys to the world.
@@ -56,8 +58,11 @@ TODOs
 * Change passport-local to something encrypted
 * Add forgot password/username workflow
 * Create API to login to mirror web pages
+* Use API keys
 * Add documentation to the main page
 * Put password on the Mongo DB
+* Timeout on logged in session
+
 
 v2013-12-09
 

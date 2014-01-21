@@ -1,0 +1,82 @@
+{ 
+	"common": {
+		"directories": {
+			"appDir": "/app",
+			"dataDir": "/data",
+			"publicDir": "/public",
+			"privateDir": "/private"
+		},
+		"app": {
+			"name": "Passboot",
+			"rootPage": "app.js",
+			"dev": "_gen_dev",
+			"devPort": 3001,
+			"dist": "_gen_dist",
+			"distPort": 3001,
+			"livereloadPort": 1337,
+			"src": "app",
+			"srcPort": "3001"
+		},
+		"key": {
+			"cookie": "looky looky iwannacookie",
+			"session": "mission fission division iwannasession",
+			"user": "user user whatanabuser",
+			"token": "token token freshfromHoboken"
+		},
+		"url": {
+			"home": "/"
+		},
+		"features": {
+			"remember_me": true,					
+			"checkbox_captcha": true
+		}
+	},
+	"development": {
+		"db": "mongodb://localhost/passboot",
+		"auth": {    
+			"facebook": {
+				"clientID": "xxx",
+				"clientSecret": "xxx",
+				"callbackURL": "http://localhost:3001/auth/facebook/callback"
+			},
+			"google": {
+				"returnURL": "http://localhost:3001/auth/google/return",
+				"realm": "http://localhost:3001/auth/google/return"
+			},
+			"twitter": {
+				"consumerKey": "xxx",
+				"consumerSecret": "jeg4kTScMF5hJtcAp8fYfPxi48N3HbORJDRiValssM",
+				"callbackURL": "http://localhost:3001/auth/twitter/callback"
+			},
+			"linkedin": {
+				"consumerKey": "xxx",
+				"consumerSecret": "SNQTqolMygAyM1Yw",
+				"callbackURL": "http://localhost:3001/auth/linkedin/callback"
+			}
+		}
+	},
+	"production": {
+		"db": "mongodb://www.example.com/passboot",
+		"auth": {    
+			"facebook": {
+				"clientID": "xxx",
+				"clientSecret": "xxx",
+				"callbackURL": "http://localhost:3001/auth/facebook/callback"
+			},
+			"google": {
+				"returnURL": "http://localhost:3001/auth/google/return",
+				"realm": "http://localhost:3001/auth/google/return"
+			},
+			"twitter": {
+				"consumerKey": "xxx",
+				"consumerSecret": "xxx",
+				"callbackURL": "http://localhost:3001/auth/twitter/callback"
+			},
+			"linkedin": {
+				"consumerKey": "xxx",
+				"consumerSecret": "xxx",
+				"callbackURL": "http://localhost:3001/auth/linkedin/callback"
+			}
+		}
+	}
+}

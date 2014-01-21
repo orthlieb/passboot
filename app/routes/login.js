@@ -25,7 +25,7 @@ module.exports = function (app, passport) {
             // "Remember Me" cookie if the option was checked
             if (!req.body.rememberme) { return next(); }
 
-            Token.save(req.user.id, function (err, token) {
+            Token.save({ type: "rememberme", value: req.user.id }, function (err, token) {
                 if (err) { return next(err); }
                 res.cookie('remember_me', token.id, { path: '/', httpOnly: true, maxAge: 604800000 }); // 7 days XXX Switch to config flag
                 return next();

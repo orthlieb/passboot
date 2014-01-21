@@ -12,7 +12,6 @@ mixin jumbotron(headerText, iconFile)
 			var taglineText = [ "Bootstrap", "Jade", "Express", "Node", "Passport" ];
 
 			var interval = setInterval(function () {
-				console.log("Tick: " + taglineText);
 				taglineText.unshift(taglineText.pop());
 				$("#tagline").text("Welcome, pardner, to this here " + taglineText.join(", ") + " round up!");
 			}, 5000);

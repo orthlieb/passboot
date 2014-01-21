@@ -2,8 +2,11 @@
  creating a Express app initializing it with the HelloWorld message
  */
  
- // XXX Things to do: timeout on logged in session
- // XXX Things to do: Recover password and username
+ // XXX Timeout on logged in session
+ // XXX API key
+ // XXX Local use encrypted password
+ // XXX Handle the Contact the Sherriff button on error pages.
+ // XXX When password is reset send an email to the user.
 'use strict';
 
 var PORT_LISTENER = 3001;
