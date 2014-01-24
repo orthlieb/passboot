@@ -18,7 +18,7 @@ module.exports = function (app, passport) {
 		transport.sendMail(mailOptions, function(error, response) {
 		    if (error) {
 		        console.log(error);
-		    }else {
+		    } else {
 		        console.log("Message sent: " + response.message);
 		    }
 		    transport.close(); // shut down the connection pool, no more messages
@@ -67,27 +67,17 @@ module.exports = function (app, passport) {
         });  
     });
 	
-	function HandleError(req, res, err, redirectTo) {
-		if (err) { 
-			if (err.type) 
-				req.flash(err.type, err.message); 
-			else
-				req.flash('error', err);				
-		}
-		
-		return res.redirect(redirectTo); 		
-	}
-	
+
 	app.get("/reset", function (req, res) {
 		// Consume the one-time token that allows the user to get to the Reset Password page.
 		Token.consume(req.query.id, function (err, token) {
-			if (err) return HandleError(req, res, err, config.url.login);
+			if (err) return UI.handleError(req, res, err, config.url.login);
 			User.findOne({ id: token.value }, function (err, user) {
-				if (err) return HandleError(req, res, err, config.url.login);
+				if (err) return UI.handleError(req, res, err, config.url.login);
 
 				// Create a new one-time token to prevent replay on the reset
 				Token.save({ type: "resetpassword", value: user.id }, function (err, token) {
-					if (err) return HandleError(req, res, err, config.url.login);
+					if (err) return UI.handleError(req, res, err, config.url.login);
 
 					return res.render("reset", { token: token.id, user: user, flash: UI.bundleFlash(req) });
 				});
@@ -97,23 +87,25 @@ module.exports = function (app, passport) {
 	app.post("/reset", function (req, res, next) {
 		// Consume our one-time resetpassword token.
 		Token.consume(req.body.token, function (err, token) {
-			if (err) return HandleError(req, res, err, config.url.login);
+			if (err) return UI.handleError(req, res, err, config.url.login);
 
 			// Make sure that the token was used for this id.
 			if (token.value != req.body.id) 
-				return HandleError(req, res, { code: 404, type: "error", message: "Token does not match user name." }, config.url.login);
+				return UI.handleError(req, res, { code: 404, type: "error", message: "Token does not match user name." }, config.url.login);
 
 			// Find the associated user
 			User.findOne({ id: token.value }, function (err, user) {
-				if (err) return HandleError(req, res, err, config.url.login);
+				if (err) return UI.handleError(req, res, err, config.url.login);
 
  				// Modify the profile and re-save
         		User.saveProfile({ id: user.id, newpassword: req.body.newpassword }, function (err, user) {
-					if (err) return HandleError(req, res, err, config.url.login);
+					if (err) return UI.handleError(req, res, err, config.url.login);
+
+					// XXX Send email that the password was recently changed.
 
 					// Log the user in directly
 		            req.login(user, function(err, user) {
-						if (err) return HandleError(req, res, err, config.url.login);
+						if (err) return UI.handleError(req, res, err, config.url.login);
 	        	        return res.redirect(config.url.home);
 	            	});
 		        });

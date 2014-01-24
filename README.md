@@ -34,11 +34,25 @@ There are number of useful configuration parameters that can be found in appConf
 
 You *should not* check this file into your sourcecode repository if your code is open source or otherwise available to the public as this will expose your API keys to the world.
 
-### config.features.remember_me
+### config.auth.*
+Various authentication ids, client secrets, and callback URLs for Facebook, GooglePlus, Twitter, and Linkedin
+
+### config.features.*
+#### remember_me
 This will turn on/off the ability to allow the user to receive a cookie in order to keep them logged in.
 
-### config.features.checkbox_captcha
+#### checkbox_captcha
 This will turn on two things in the sign up page: a CSS hidden checkbox that should *never* be checked and a client-side generated checkbox that should always be checked. The value of the client-side checkbox is a server-generated one-time use token to prevent replay. See this [article](http://uxmovement.com/forms/captchas-vs-spambots-why-the-checkbox-captcha-wins) for why this is a good idea.
+
+### config.mail.*
+Mail service, authentication, and sender information for mail messages sent by the application.
+
+### config.key.*
+Various cookie, session, user, and token secrets. 
+
+### config.url.*
+URL snippets to go to various pages in the application. Good so that if you relocate something you don't need to recode in file.
+
 
 ## Flow Control
 ### app.use()

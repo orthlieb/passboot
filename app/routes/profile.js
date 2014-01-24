@@ -16,6 +16,7 @@ module.exports = function (app, passport) {
     
     app.post("/profile", Auth.isAuthenticated, function (req, res, next) {
         User.saveProfile(req.body, function (err, user) {
+            // XXX If password changed, send email to the user that that happened
             if (err) { 
                 req.flash(err.type, err.message);
             } else {

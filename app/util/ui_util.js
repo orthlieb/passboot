@@ -1,7 +1,7 @@
 var _ = require("underscore");
 
 // Bundle up flash for consumption in template files.
-exports.bundleFlash = function bundleFlash(req) {
+exports.bundleFlash = function BundleFlash(req) {
 	// No flash {}
 	// flash but empty contents { "info": [] }
 	// flash { "info": ["This is some info"] }
@@ -18,3 +18,14 @@ exports.bundleFlash = function bundleFlash(req) {
 	
 	return _.size(ff) ? ff : null;
 }
+
+exports.handleError = function HandleError(req, res, err, redirectTo) {
+		if (err) { 
+			if (err.type) 
+				req.flash(err.type, err.message); 
+			else
+				req.flash('error', err);				
+		}
+		
+		return res.redirect(redirectTo); 		
+	}
