@@ -47,6 +47,8 @@
         "grunt-contrib-watch": "~0.5.1",
         "grunt-open": "~0.2.2",
         "grunt-nodemon": "~0.1.0",
-        "grunt-markdown": "~0.4.0"
+        "grunt-markdown": "~0.4.0",
+        "chai": "*",
+        "mocha": "*"
     }
 }

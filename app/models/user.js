@@ -70,7 +70,6 @@ UserSchema.statics.exists = function (username, done) {
 	this.findOne({ id: username }, function (err, user) {
 		if (err) return UserVanillaErrorHandler(err, user, done);
 		if (!user) {
-			console.log("UserSchema.exists(" + username + ") false");
 			return done({ code: 404, type: 'error', message: 'User does not exist.' });
 		}
 

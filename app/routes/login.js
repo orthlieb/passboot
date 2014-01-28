@@ -4,7 +4,6 @@
 
 'use strict';
 
-var User = require('../models/user');
 var Auth = require('../middleware/authorization');
 var Token = require("../models/token");
 var uiutil = require("../util/ui_util");

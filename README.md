@@ -19,16 +19,20 @@ Passboot
 	* `git clone https://github.com/orthlieb/passboot.git`
 	* `cd passboot`
 * Install the dependent modules with: `npm install` (locally a node_modules directory will be created)
+* Copy appConfigTemplate.json to appConfig.json and edit the file appropriately. See [Configuration][Configuration] for more details.
+    * `cd app/config`
+    * `cp appConfigTemplate.json appConfig.json`
 * `mongod` to start the Mongo database
 * Start the server with: `grunt` and ensure that all is well
 * You should now be able to see the demo at [http://localhost:3001](http://localhost:3001)
+
 ### Enabling Social Login
-* Need to get API keys for the various networks and add them appConfig.json
+You will need to go to the various developer sites to register your application and get client ids and secrets for the social networks you want to support and add them to appConfig.json. You can obtain the necessary API keys here: [[Facebook](https://developers.facebook.com/docs/facebook-login/login-flow-for-web/), [LinkedIn](https://developer.linkedin.com/documents/authentication), [Twitter](https://dev.twitter.com/apps/new). GooglePlus does not currently need an API key/secret.
 
 # Documentation
 ---
 ## Configuration
-In order to install, you will need to take appConfigTemplate.json and copy it to appConfig.json and populate it with your private and confidential data, like API keys.
+[Configuration]: In order to install, you will need to take appConfigTemplate.json and copy it to appConfig.json and populate it with your private and confidential data, like API keys.
 
 There are number of useful configuration parameters that can be found in appConfig.json. These include keys for authentication of APIs like Facebook, Google, Twitter, and LinkedIn as well as feature flags to turn on and off features. The use of these configurations will be documented in the sample file included here.
 
@@ -57,6 +61,7 @@ URL snippets to go to various pages in the application. Good so that if you relo
 ## Flow Control
 ### app.use()
 ### Routing
+The application uses a dynamic loader to load all routes from the routes folder. 
 
 ## Client-side Validation
 * [jQuery Validation Plugin](http://jqueryvalidation.org/)
@@ -64,6 +69,9 @@ URL snippets to go to various pages in the application. Good so that if you relo
 ## Debugging
 * Node Inspector
 * mongodb
+
+## Testing
+* Jasmine-node
 
 # Release History
 ---
