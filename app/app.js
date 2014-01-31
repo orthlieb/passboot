@@ -6,6 +6,7 @@
 // XXX Local use encrypted password
 // XXX Handle the Contact the Sherriff button on error pages.
 // XXX When password is reset send an email to the user.
+// XXX Put a password on the mongodb.
 'use strict';
 
 var PORT_LISTENER = 3001;

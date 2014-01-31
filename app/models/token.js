@@ -27,10 +27,8 @@ TokenSchema.statics.consume = function (tokid, done) {
 	});
 };
 	
-TokenSchema.statics.save = function (data, done, keylen) {
-	var Token = this;
-	var d = new Date();
-	
+TokenSchema.statics.generate = function (data, done, keylen) {
+	var Token = this;	
 	data.id =  hash.createSalt(keylen);
 	Token.create(data, function (err, token) {
 		if (err) return done(err, token);
