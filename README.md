@@ -18,7 +18,7 @@ Passboot
 	* `cd <parent directory>`
 	* `git clone https://github.com/orthlieb/passboot.git`
 	* `cd passboot`
-* Install the dependent modules with: `npm install` (locally a node_modules directory will be created)
+* Install the dependent modules with: `npm install` (a node_modules directory will be created locally)
 * Copy appConfigTemplate.json to appConfig.json and edit the file appropriately. See [Configuration][Configuration] for more details.
     * `cd app/config`
     * `cp appConfigTemplate.json appConfig.json`
@@ -57,6 +57,31 @@ Various cookie, session, user, and token secrets.
 ### config.url.*
 URL snippets to go to various pages in the application. Good so that if you relocate something you don't need to recode in file.
 
+### config.passwordOptions.*
+See [complexify](https://github.com/danpalmer/jquery.complexify.js) by Dan Palmer for documentation and the node.js port [node-complexify](https://github.com/kislyuk/node-complexify) for the code.
+
+Complexify's default settings will enforce a minimum level of complexity that would mean brute-forcing should take ~600 years on a commodity desktop machine (minimum 12 characters, minimum complexity of 49). The 'perfect' password used to scale the complexity percentage would take 3x10^33 years. These are equivalent to a 12 character password with uppercase, lowercase and numbers included, and a 25 character password with uppercase, lowercase, numbers and a wide range of punctuation. 
+
+Complexity is calculated as follows: the *span* of a character is the number of characters in it's identified set. Sets are defined as clusters of unicode characters (uppercase, lowercase, numbers, punctuation, hiragana, etc.)
+
+If *l* equals the length of your password and span(*k*) equals the *range* of the *k*th character in the password, then: 
+
+$$complexity = {\log {(\sum\_{k=1}^l span(k))}^l}$$ 
+
+Note that passboots complexity default settings are not as stringent (min: 8, complexity: 30).
+
+#### minimumCharacters
+Minimum number of characters to require for a password. Default is 8.
+
+#### minimumComplexity
+Minimum complexity to require for a password. See [complexify](https://github.com/danpalmer/jquery.complexify.js) for more details.
+
+#### banMode
+One of 'strict', 'loose', 'none'. Default is 'loose'.
+
+* 'strict' will fail a password if it matches or is a substring of one of the passwords in the common password list.
+* 'loose' will fail a password if it exactly matches one of the passwords in the common list.
+* 'none' will implement no password checking.
 
 ## Flow Control
 ### app.use()
@@ -64,7 +89,7 @@ URL snippets to go to various pages in the application. Good so that if you relo
 The application uses a dynamic loader to load all routes from the routes folder. 
 
 ## Client-side Validation
-* [jQuery Validation Plugin](http://jqueryvalidation.org/)
+* Passboot uses the [jQuery Validation Plugin](http://jqueryvalidation.org/) to perform client-side validation. There are validation APIs defined at http://<host>/user/valid and http://<host>/password/valid.
 
 ## Debugging
 * Node Inspector

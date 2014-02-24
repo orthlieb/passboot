@@ -29,7 +29,9 @@
         "passport-local": "*",
         "passport-remember-me": "*",
         "passport-twitter": "*",
-        "underscore": "*"        
+        "passport-localapikey": "*",
+        "underscore": "*",
+	"node-complexify": "*"        
     },
     "keywords": [
         "nodejs",

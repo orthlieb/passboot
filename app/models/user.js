@@ -9,6 +9,7 @@ function UserEscapeString(val, schemaType) {
 // XXX Probably shouldn't hard code the providers.
 var USER_PROVIDERS = [ "local", "facebook", "google", "twitter", "linkedin" ];
 var USER_GENDERS = [ "male", "female" ];
+var USER_ROLES = [ "public", "user", "admin" ];
 
 var schemaTemplate = {
 	id:	{ type: String, required: true, unique: true, lowercase: true, trim: true, set: UserEscapeString },
@@ -30,10 +31,17 @@ var schemaTemplate = {
 		match: [ /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/, '{PATH} is not a valid URL' ]
 	},
 	gender: { type: String, lowercase: true, trim: true, enum: USER_GENDERS },
+	role: { type: String, default: "public", enum: USER_ROLES },
 	created: { type: Date, default: Date.now }
 };
 
 var UserSchema = new mongoose.Schema(schemaTemplate);
+
+UserSchema.statics.roles = {
+    public: 1, // 001
+    user:   2, // 010
+    admin:  4  // 100
+};
 
 function UserVanillaErrorHandler(err, user, done) {
 // err: ValidationError
@@ -91,6 +99,8 @@ UserSchema.statics.signup = function (data, done) {
 		var obj = hash.createHash(data.password);
 		data.salt = obj.salt;
 		data.hash = obj.hash;
+
+		data.role = "user";
 		 
 		data = _.pick(data, _.keys(schemaTemplate));	// Limit which fields get picked up
 

@@ -65,7 +65,8 @@ module.exports = function (app, passport) {
 	// === PASSPORT ROUTES
 	
 	// === API
-	app.get('/api/user/valid', function (req, res) {
+
+	app.get('/api/user/valid', Auth.needsAccessLevel(Auth.accessLevels.public), function (req, res) {
 		// Typically used for lookahead error message on the form.
 		console.log("Testing for user existence: " + JSON.stringify(req.query));
 		User.exists(req.query.id, function (err, user) {
@@ -73,6 +74,22 @@ module.exports = function (app, passport) {
 			return res.json(!!err);
 		});
 	});
+
+	app.get('/api/password/valid', Auth.needsAccessLevel(Auth.accessLevels.public), function (req, res) {
+		console.log("Testing password to see if it complies to policy: " + JSON.stringify(req.query));
+		var complexify = require('node-complexify');
+		complexify.evalPasswordComplexity(req.query.password, config.passwordOptions, function (err, valid, complexity) {
+			var errMessages = {
+				toosimple: "Your password is too simple, try using more characters and/or punctuation and numbers.",
+				tooshort: "Your password is too short in length, add more characters.",
+				banned: "Your password is too common, choose something more unique."
+			};
+			
+			// Only return back the first error.
+			return res.json((err && err.length) ? errMessages[err[0]] : true);
+		});
+	});
+
 	// === API
 	
 	// === END OF THE LINE

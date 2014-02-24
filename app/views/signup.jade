@@ -76,12 +76,11 @@ html(lang='en')
 						rules: {
 							password: {
 								required: true,
-								minlength: 8
+								remote: "api/password/valid"
 							},
 							confirm: {
 								required: true,
-								minlength: 8,
-								equalTo: "#password"
+								equalTo: "#password",
 							},
 							email: {
 								required: true,
@@ -99,7 +98,7 @@ html(lang='en')
 								},
 								id: {
 									required: "Please choose a unique username",
-									remote: jQuery.format("This username is already in use or not available")
+									remote: "This username is already in use or not available"
 								},
 								givenName: {
 									required: "Please enter your first name"
@@ -108,13 +107,10 @@ html(lang='en')
 									required: "Please enter your last name"
 								},
 								password: {
-									required: "Provide a password",
-									minlength: jQuery.format("Enter at least {0} characters")
-								},
+									required: "Provide a password"					},
 								confirm: {
 									required: "Repeat your password",
-									minlength: jQuery.format("Enter at least {0} characters"),
-									equalTo: "Enter the same password as above"
+									equalTo: "Your confirmation password does not match"
 								},
 								notspam: {
 									required: "Please check this box to prove that you are human",
