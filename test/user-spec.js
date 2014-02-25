@@ -107,8 +107,8 @@ describe('Existing user', function (done) {
 
     it ("should not save a profile if the password is changing and the old password does not match", function (done) {
         var data = _.clone(dataTemplate);
-        data.password = "invalidpassword";
-        data.newpassword = "newpassword";
+        data.oldpassword = "invalidpassword";
+        data.password = "newpassword";
         User.saveProfile(data, function(err, user) {
             expect(err).to.have.property('code', 401);
         });

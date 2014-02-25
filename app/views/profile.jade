@@ -52,11 +52,11 @@ html(lang='en')
 									input.form-control(id="displayName", name="displayName", placeholder="Display Name", type='text', value='#{user.displayName}').input-lg
 							.row
 								.form-group.col-xs-12.col-sm-4
-									label(for="password").control-label Old Password:
-									input.form-control(id='password', name='password', placeholder='Password', type='password').input-lg
+									label(for="oldpassword").control-label Old Password:
+									input.form-control(id='oldpassword', name='oldpassword', placeholder='Password', type='password').input-lg
 								.form-group.col-xs-12.col-sm-4
-									label(for="newpassword").control-label New Password:
-									input.form-control(id='newpassword', name='newpassword', placeholder='Password', type='password').input-lg
+									label(for="password").control-label New Password:
+									input.form-control(id='password', name='password', placeholder='Password', type='password').input-lg
 								.form-group.col-xs-12.col-sm-4
 									label(for="confirm").control-label Confirm Password:
 									input.form-control(id='confirm', name='confirm', placeholder='Confirm Password', type='password').input-lg
@@ -77,14 +77,10 @@ html(lang='en')
 			$("#profile-form").validate({
 					rules: {
 						password: {
-							minlength: 8
-						},
-						newpassword: {
-							minlength: 8
+							remote: "api/password/valid"
 						},
 						confirm: {
-							minlength: 8,
-							equalTo: "#newpassword"
+							equalTo: "#password"
 						},
 						email: {
 							email: true,
@@ -94,14 +90,7 @@ html(lang='en')
 							email: {
 								email: "Enter a valid email address",
 							},
-							password: {
-								minlength: jQuery.format("Enter at least {0} characters")
-							},
-							newpassword: {
-								minlength: jQuery.format("Enter at least {0} characters")
-							},
 							confirm: {
-								minlength: jQuery.format("Enter at least {0} characters"),
 								equalTo: "Enter the same password as above"
 							},
 						},						

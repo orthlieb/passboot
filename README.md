@@ -1,9 +1,4 @@
-Passboot
-========
-
-![Passboot icon](./app/public/ico/Passboot.png)
 # Introduction
----
 * What is Passboot? It is an Express, Passport, Jade, Bootstrap, Mongo, Node mashup.
 * I was looking for a solution that I could use for simple username/password signup and login and social login. [Passport](http://passportjs.org/) is authentication middleware for node and has a variety plug-ins called strategies that perform the necessary setup and authentication for you. 
 * What was missing was a good example and UI to get me started. Hence the birth of Passboot.
@@ -68,13 +63,13 @@ If *l* equals the length of your password and span(*k*) equals the *range* of th
 
 $$complexity = {\log {(\sum\_{k=1}^l span(k))}^l}$$ 
 
-Note that passboots complexity default settings are not as stringent (min: 8, complexity: 30).
+Note that passboots complexity default settings are not as stringent (min: 8, complexity: 33).
 
 #### minimumCharacters
 Minimum number of characters to require for a password. Default is 8.
 
 #### minimumComplexity
-Minimum complexity to require for a password. See [complexify](https://github.com/danpalmer/jquery.complexify.js) for more details.
+Minimum complexity to require for a password. See [complexify](https://github.com/danpalmer/jquery.complexify.js) for more details. Default is 33.
 
 #### banMode
 One of 'strict', 'loose', 'none'. Default is 'loose'.
@@ -103,13 +98,10 @@ The application uses a dynamic loader to load all routes from the routes folder.
 TODOs
 
 * Change passport-local to something encrypted
-* Add forgot password/username workflow
 * Create API to login to mirror web pages
 * Use API keys
-* Add documentation to the main page
 * Put password on the Mongo DB
 * Timeout on logged in session
-
 
 v2013-12-09
 
@@ -122,7 +114,7 @@ Licensed under the [MIT](http://opensource.org/licenses/MIT) license.
 
 (The MIT License)
 
-Copyright(c) 2013 Carl Orthlieb <github@orthlieb.com>
+Copyright(c) 2014 Carl Orthlieb <github@orthlieb.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

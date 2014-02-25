@@ -61,10 +61,10 @@ function UserVanillaErrorHandler(err, user, done) {
 	if (err) {
 		if (err.name && err.name == "ValidationError") {
 			err.message += " [" + _.keys(err.errors).join(", ") + "]";
-			return done({ code: 400, type: 'error', message: err.message, params: _.keys(err.errors)});
+			return done({ code: 400, type: 'error', message: err.message, params: _.keys(err.errors)}, user);
 		}
 		console.log("User Model Error: " + err);
-		return done({ code: 500, type: 'error', message: 'Internal error.' });
+		return done({ code: 500, type: 'error', message: 'Internal error.' }, user);
 	}
 	return done(null, user);
 }
@@ -130,15 +130,15 @@ UserSchema.statics.saveProfile = function (data, done) {
 	User.findOne({ id: data.id }, function (err, user) {
 		if (err) return UserVanillaErrorHandler(err, user, done);
 
-		if (!user) return done({ code: 404, type: 'error', message: "User does not exist." });
+		if (!user) return done({ code: 404, type: 'error', message: "User does not exist." }, user);
 		
-		if (data.password && data.newpassword) {
+		if (data.oldpassword && data.password) {
 			// Make sure that the old password is valid before we change to a new one.
-			if (!hash.checkPassword(user.hash, user.salt, data.password)) {
-				return done({code: 401,  type: 'error', message: "Incorrect password." });
+			if (!hash.checkPassword(user.hash, user.salt, data.oldpassword)) {
+				return done({code: 401,  type: 'error', message: "Incorrect password." }, user);
 			}
 			
-			var obj = hash.createHash(data.newpassword);
+			var obj = hash.createHash(data.password);
 			data.salt = obj.salt;
 			data.hash = obj.hash;
 		}
