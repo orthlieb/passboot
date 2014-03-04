@@ -100,81 +100,62 @@ describe('New user', function (done) {
 });
 
 describe('Existing user', function (done) {
-        it('should not save a profile if the user doesn'
-            t really exist ', function (done) {
+    it('should not save a profile if the user does not really exist', function (done) {
         var data = _.clone(dataTemplate);
-        data.id = '
-            doesnotexist ';
-        User.saveProfile(data, function(err, user) {
-            expect(err).to.have.property('
-            code ', 404);
+        data.id = 'doesnotexist';
+        User.saveProfile(data, function (err, user) {
+            expect(err).to.have.property('code', 404);
         });
         done();
     });
 
-    it ('
-            should not save a profile
-            if the password is changing and the old password does not match ', function (done) {
+    it('should not save a profile if the password is changing and the old password does not match ', function (done) {
         var data = _.clone(dataTemplate);
-        data.oldpassword = '
-            invalidpassword ';
-        data.password = '
-            newpassword ';
-        User.saveProfile(data, function(err, user) {
-            expect(err).to.have.property('
-            code ', 401);
+        data.oldpassword = 'invalidpassword ';
+        data.password = 'newpassword ';
+        User.saveProfile(data, function (err, user) {
+            expect(err).to.have.property('code', 401);
         });
         done();
     });
 
-    it ('
-            should save the profile
-            if the data is valid ', function(done) {
+    it('should save the profile if the data is valid', function (done) {
         var data = _.clone(dataTemplate);
-        data.dingle = '
-            hewhoshouldnotbesaved ';
-        data.gender = '
-            male ';
-        User.saveProfile(data, function(err, user) {
-           expect(err).to.not.be.ok;
-           expect(user).to.not.have.property('
-            dingle ');
-           expect(user).to.have.property('
-            gender ', '
-            male ');
+        data.dingle = 'hewhoshouldnotbesaved';
+        data.gender = 'male';
+        User.saveProfile(data, function (err, user) {
+            expect(err).to.not.be.ok;
+            expect(user).to.not.have.property('dingle');
+            expect(user).to.have.property('gender', 'male');
         });
         done();
     });
 });
 
-describe('
-            User password ', function (done) {
-    it ('
-            should be valid ', function(done) {
+describe('User password', function (done) {
+    it('should be valid', function (done) {
         var data = _.clone(dataTemplate);
-         User.isValidUserPassword(data.id, data.password, function(err, user) {
+        User.isValidUserPassword(data.id, data.password, function (err, user) {
             expect(err).to.be.not.ok;
-         });
+        });
         done();
-    });   
-    
-    it ('
-            should not be valid ', function(done) {
+    });
+
+    it('should not be valid', function (done) {
         var data = _.clone(dataTemplate);
-        data.password = '
-            invalidpassword ';
-         User.isValidUserPassword(data.id, data.password, function(err, user) {
-            expect(err).to.have.property('
-            code ', 401);
-         });
+        data.password = 'invalidpassword';
+        User.isValidUserPassword(data.id, data.password, function (err, user) {
+            expect(err).to.have.property('code', 401);
+        });
         done();
     });
 });
 
 after(function (done) {
     // Clean up
-    User.remove({ id: '
-            testid ' });
+    User.remove({
+        id: 'testid'
+    });
     mongoose.disconnect();
     done();
 });
