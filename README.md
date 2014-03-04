@@ -1,6 +1,9 @@
 # Introduction
-* What is Passboot? It is an Express, Passport, Jade, Bootstrap, Mongo, Node mashup.
-* I was looking for a solution that I could use for simple username/password signup and login and social login. [Passport](http://passportjs.org/) is authentication middleware for node and has a variety plug-ins called strategies that perform the necessary setup and authentication for you. 
+---
+* What is Passboot? It is an [Express](http://expressjs.com/), [Passport](http://passportjs.org/), [Jade](http://jade-lang.com/), [Bootstrap](http://getbootstrap.com/), [Mongo](http://www.mongodb.org/), [Node](http://nodejs.org/) mashup.
+
+* I was looking for a solution that I could use for simple username/password signup and login and social login. Passport is authentication middleware for node and has a variety plug-ins called strategies that perform the necessary setup and authentication for you. 
+
 * What was missing was a good example and UI to get me started. Hence the birth of Passboot.
 
 ## Getting Started
@@ -37,10 +40,10 @@ You *should not* check this file into your sourcecode repository if your code is
 Various authentication ids, client secrets, and callback URLs for Facebook, GooglePlus, Twitter, and Linkedin
 
 ### config.features.*
-#### remember_me
+#### rememberMe
 This will turn on/off the ability to allow the user to receive a cookie in order to keep them logged in.
 
-#### checkbox_captcha
+#### checkboxCaptcha
 This will turn on two things in the sign up page: a CSS hidden checkbox that should *never* be checked and a client-side generated checkbox that should always be checked. The value of the client-side checkbox is a server-generated one-time use token to prevent replay. See this [article](http://uxmovement.com/forms/captchas-vs-spambots-why-the-checkbox-captcha-wins) for why this is a good idea.
 
 ### config.mail.*
@@ -91,7 +94,7 @@ The application uses a dynamic loader to load all routes from the routes folder.
 * mongodb
 
 ## Testing
-* Jasmine-node
+* Mocha
 
 # Release History
 ---
